@@ -1,0 +1,28 @@
+---
+
+- hosts: special
+  become: yes
+  tasks: 
+   - name: download java from s3 web
+     get_url: url=https://s3.ap-south-1.amazonaws.com/srinivas.downloads/linux/jdk-8u191-linux-x64.tar.gz dest=/opt/jdk-8u191-linux-x64.tar.gz
+
+   - name: Extract archive
+     command: chdir=/opt /bin/tar xzf /opt/jdk-8u191-linux-x64.tar.gz -C /opt/ creates=/opt/java
+
+   - name: download tomcat from s3 web
+     get_url: url=https://s3.ap-south-1.amazonaws.com/srinivas.downloads/linux/apache-tomcat-8.5.34.tar.gz dest=/opt/apache-tomcat-8.5.34.tar.gz
+
+   - name: Extract archive
+     command: chdir=/opt /bin/tar xzf /opt/apache-tomcat-8.5.34.tar.gz -C /opt/ creates=/opt/tomcat
+
+   - name: Copy tomcat-user.xml
+     copy: src=~/tomcat-users.xml dest=/opt/tomcat/conf/
+   
+   - name: copy context.xml
+     copy: src=~/context.xml dest=/opt/tomcat/webapps/manager/META-INF/ 
+  
+   - name: Install Tomcat init script
+     copy: src=~/tomcat-initscript.sh dest=/etc/init.d/tomcat mode=0755
+
+   - name: Start Tomcat
+     service: name=tomcat state=started enabled=yes
