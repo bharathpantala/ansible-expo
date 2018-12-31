@@ -1,0 +1,12 @@
+- name: Installs Nginx webserver
+  apt: pkg=nginx state=present update_cache=yes
+  notify: 
+    - start-nginx
+
+- name: Copy websites to hosts
+  copy: src=../files/infotern/ dest=/var/www/html/ mode=0644 
+  notify:
+   - restart-nginx
+
+
+

@@ -1,0 +1,5 @@
+- name: installs apache webserver
+  yum: name=httpd state=present
+  notify:
+    - start-apache
+
